@@ -51,6 +51,7 @@ const generate = async () => {
 </script>
 <template>
   <div class="w-full">
+    <PageTitle>Chat with an article</PageTitle>
     <div class="flex items-center w-full space-x-2">
       <input class="w-full border-gray-200" type="url" placeholder="URL to an article" v-model="url">
       <AppButton :disabled="isLoading || !url.trim().length" @click="fetchContent">Load</AppButton>

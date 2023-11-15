@@ -5,6 +5,9 @@ import { Tool } from 'langchain/tools'
 
 const runtimeConfig = useRuntimeConfig()
 
+const newTodo = ref('')
+const todos = ref([])
+
 const prompt = ref('')
 const response = ref('')
 const isLoading = ref(false)
@@ -68,7 +71,34 @@ class CodeEditTool extends Tool {
   { "file": "app.vue", "line": 12": "type": "insert", "code": "console.log(\'hello world\')" }`
 }
 
-const tools = [new CodeListTool(), new CodeViewTool(), new CodeEditTool()]
+class TodoListTool extends Tool {
+  async call() {
+    return JSON.stringify(todos.value)
+  }
+  name = 'listTodos'
+  description = 'See a list of all todos. The return value is gonna be in JSON format, for every todo there is a text and a done field that indicates if the item was already done.'
+}
+
+class CreateTodoTool extends Tool {
+  async call(args) {
+    todos.value.push({ done: false, text: args.input, createdAt: Date.now() })
+  }
+  name = 'createTodo'
+  description = 'Create a new todo. The parameter needs to be a string with the text of the item.'
+}
+
+class FinishTodoTool extends Tool {
+  async call(args) {
+    console.log('finish', args)
+    const todo = todos.value.find(({ createdAt }) => createdAt === +args.input)
+
+    if (todo) todo.done = true
+  }
+  name = 'finishTodo'
+  description = 'Mark a todo as done. Input needs to be the createdAt of the task.'
+}
+
+const tools = [new CodeListTool(), new CodeViewTool(), new CodeEditTool(), new TodoListTool(), new CreateTodoTool(), new FinishTodoTool()]
 
 const model = new ChatOpenAI({
   modelName: 'gpt-4-0613',
@@ -80,7 +110,7 @@ const executor = await initializeAgentExecutorWithOptions(tools, model, {
   agentType: 'openai-functions',
   verbose: true,
   agentArgs: {
-    prefix: `You are WebDevGPT, a helpful assistant that can help to make changes in a web application. The application is built using Nuxt 3 and TailwindCSS. Only ask the user for help if you already tried the tools. The user is currently on page example5 (pages/example5.vue). The global styles (including used font) are defined in assets/index.css.`
+    prefix: `You are a helpful assistant that can help with using a todo application. But you can also assist to make changes in a web application. The application is built using Nuxt 3 and TailwindCSS. Only ask the user for help if you already tried the tools. The user is currently on page example5 (pages/example5.vue). The global styles (including used font) are defined in assets/index.css.`
   }
 })
 
@@ -97,11 +127,36 @@ const generate = async () => {
 
 </script>
 <template>
-  <div class="w-full">
-    <PromptContainer>
-      <textarea class="w-full border-gray-200" :rows="5" v-model="prompt"></textarea>
-    </PromptContainer>
-    <AppButton @click="generate()" class="mt-2" :disabled="!prompt.trim().length || isLoading">Generate</AppButton>
-    <p class="mt-8 italic" v-html="response"></p>
+  <div class="w-screen">
+    <PageTitle class="block mx-auto text-center">App Copilot</PageTitle>
+    <div class="flex justify-center space-x-4">
+      <div class="w-full max-w-sm">
+        <input type="text" class="w-full" placeholder="Add a todo" v-model="newTodo" @keydown.enter.prevent="() => {
+          todos.push({ text: newTodo, done: false, createdAt: Date.now() })
+          newTodo = ''
+        }">
+        <div class="flex flex-col gap-2 mt-4">
+          <label v-for="todo in todos.filter(todo => !todo.done)" :key="todo.createdAt" class="flex items-center p-4 space-x-4 bg-gray-100 rounded">
+            <input :checked="todo.done" type="checkbox" @change="(evt) => {
+              todo.done = evt.target.checked
+            }">
+            <span>{{ todo.text }}</span>
+          </label>
+          <label v-for="todo in todos.filter(todo => todo.done)" :key="todo.createdAt" class="flex items-center p-4 space-x-4 bg-gray-100 rounded opacity-50">
+            <input :checked="todo.done" type="checkbox" @change="(evt) => {
+              todo.done = evt.target.checked
+            }">
+            <span>{{ todo.text }}</span>
+          </label>
+        </div>
+      </div>
+      <div class="w-full max-w-sm">
+        <PromptContainer>
+          <textarea class="w-full border-gray-200" :rows="5" v-model="prompt"></textarea>
+        </PromptContainer>
+<AppButton @click="generate()" class="mt-2" :disabled="!prompt.trim().length || isLoading">Generate</AppButton>
+        <p class="mt-8 italic" v-html="response"></p>
+      </div>
+    </div>
   </div>
 </template>

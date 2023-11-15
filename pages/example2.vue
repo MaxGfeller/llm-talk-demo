@@ -6,7 +6,7 @@ import { PromptTemplate } from 'langchain/prompts'
 const runtimeConfig = useRuntimeConfig()
 
 const result = ref('')
-const jokeType = ref('')
+const sentence = ref('')
 const isLoading = ref(false)
 
 const chat = new ChatOpenAI({
@@ -15,14 +15,13 @@ const chat = new ChatOpenAI({
 })
 
 const prompt = PromptTemplate.fromTemplate(
-  `Tell us a {jokeType} joke about web development.`
-);
-
+  `Rewrite the following sentence: "{sentence}". Make it sound like it was written by a professional copywriter.`
+)
 
 const generate = async () => {
   isLoading.value = true
   const formattedPrompt = await prompt.format({
-    jokeType: jokeType.value
+    sentence: sentence.value
   });
 
   const response = await chat.predictMessages([
@@ -34,9 +33,11 @@ const generate = async () => {
 }
 </script>
 <template>
-  <div class="">
-    <PromptContainer>Tell us a <input class="px-2 py-1 border-none" placeholder="funny" v-model="jokeType"> joke about web
-      development.</PromptContainer>
+  <div class="w-full">
+    <PageTitle>Copywriting Assistant</PageTitle>
+    <PromptContainer class="mt-8">
+      <textarea class="w-full border-gray-200" :rows="5" v-model="sentence"></textarea>
+    </PromptContainer>
     <AppButton class="mt-2" :disabled="isLoading" @click="generate()">Generate</AppButton>
     <p class="mt-8" v-html="result"></p>
   </div>

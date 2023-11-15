@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       const path = join(basePath, file.name)
 
       if (file.isDirectory()) {
-        if (path.includes('node_modules') || path.includes('.nuxt')) continue
+        if (path.includes('node_modules') || path.includes('.nuxt') || path.includes('processing') || path.includes('.git')) continue
         await processPaths(path)
       } else {
         paths.push(path)

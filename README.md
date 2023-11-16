@@ -18,11 +18,11 @@ If you don't have a key yet, sign up for a OpenAI account and generate an API ke
 
 ### Example 1 (`index.vue`)
 
-This is a very simple example, which is showing how you can load and call a model. If the user clicks the button, it will generate a list of potential names for our web development community.
+This is a very simple example, which is showing how you can load and call a model. If the user clicks the button, it will generate a suggestions for a repository name.
 
 ### Example 2 (`example2.vue`)
 
-This example is just a little more dynamic: using [Prompt Templates](https://js.langchain.com/docs/modules/model_io/prompts/prompt_templates/), we can create a very simple form in which the user can enter an adjective and we'll construct a prompt from that.
+This example is just a little more dynamic: using [Prompt Templates](https://js.langchain.com/docs/modules/model_io/prompts/prompt_templates/), we can create a very simple form in which the user can enter sentence which GPT then rewrites to make it sound professional.
 
 ### Example 3 (`example3.vue`)
 
@@ -38,19 +38,20 @@ To run this example, you have to have a [ChromaDB](https://www.trychroma.com) in
 chroma_server_cors_allow_origins: List[str] = ["http://localhost:3000"]
 ```
 
-You also have to run the `processing/process-sitemap.js` script in this project, you can do so as follows:
+You also have to clone the Nuxt website repo and run the processing script, you can do so as follows:
 
 ```bash
-node processing/process-sitemap.js
+git clone git@github.com:nuxt/website-v2.git processing/nuxt-website-repo
+npm run process-data
 ```
 
 This will scrape all the documentation pages from the Nuxt website and store them in the ChromaDB instance. It's using [OpenAIs ada-002 embedding model](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) to create the vectors.
 
-**Note:** this vector store collection is not optimized at all, because the documents are quite big - which eats up a lot of context and may be costly to query on. You could optimize that using [text splitters](https://js.langchain.com/docs/modules/data_connection/document_transformers/).
-
 ### Example 5 (`example5.vue`)
 
-Introducing **WebDevGPT**, an AI agent given tools to view and edit the source code of the web application, it itself is running on. You can give it orders to change various things on the open website and, because it's running in dev mode with HMR enabled, see the changes be applied in real-time.
+In this example we're introducing an assistant that can access data and tools inside a demo todo application.
+
+The agent is also given tools to view and edit the source code of the web application, it itself is running on. You can give it orders to change various things on the open website and, because it's running in dev mode with HMR enabled, see the changes be applied in real-time.
 
 You can take a look at the defined tools in the `example5.vue` file, and the API methods they are calling in the `server/api/code/` directory.
 

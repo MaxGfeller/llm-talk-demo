@@ -108,11 +108,7 @@ const stream = await chain.stream({
 <template>
   <div class="w-full">
     <PageTitle>Ask the Nuxt documentation <span v-if="useOllama" class="font-normal text-gray-500">(using Ollama)</span></PageTitle>
-    <!-- <PromptContainer class="mt-8">
-      <textarea class="w-full border-gray-200" :rows="5" v-model="prompt"></textarea>
-    </PromptContainer>
-    <AppButton @click="generate()" class="mt-2" :disabled="!prompt.trim().length || isLoading">Generate</AppButton> -->
-    <p class="mt-8 responseContainer" v-html="response"></p>
+    <p class="responseContainer" v-html="response"></p>
     <div class="flex flex-col w-full space-y-2">
       <template v-for="message in messages" :key="message.text">
         <div class="min-w-0 max-w-[75%] p-2 text-sm rounded-lg"

@@ -1,7 +1,6 @@
 <script setup>
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { HumanMessage } from 'langchain/schema'
-import { PromptTemplate } from 'langchain/prompts'
+import { ChatOpenAI } from '@langchain/openai'
+import { ChatPromptTemplate } from '@langchain/core/prompts'
 
 const runtimeConfig = useRuntimeConfig()
 
@@ -14,19 +13,18 @@ const chat = new ChatOpenAI({
   openAIApiKey: runtimeConfig.public.openAiApiKey
 })
 
-const prompt = PromptTemplate.fromTemplate(
-  `Rewrite the following sentence: "{sentence}". Make it sound like it was written by a professional copywriter.`
-)
+const prompt = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant that can help with copywriting. Rewrite the sentence that the user sends to make it sound like it was written by a professional copywriter.'],
+  ['human', 'Sentence: {input}']
+])
 
 const generate = async () => {
   isLoading.value = true
   const formattedPrompt = await prompt.format({
-    sentence: sentence.value
+    input: sentence.value
   });
 
-  const response = await chat.predictMessages([
-    new HumanMessage(formattedPrompt)
-  ]);
+  const response = await chat.invoke(formattedPrompt)
 
   result.value = response.content.replaceAll('\n', '<br />')
   isLoading.value = false

@@ -1,9 +1,9 @@
 <script setup>
 import {
-  PromptTemplate,
-} from 'langchain/prompts'
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema'
+  ChatPromptTemplate
+} from '@langchain/core/prompts'
+import { ChatOpenAI } from '@langchain/openai'
+import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages'
 
 const runtimeConfig = useRuntimeConfig()
 
@@ -15,9 +15,13 @@ const response = ref('')
 const messages = ref([])
 
 const model = new ChatOpenAI({
-  modelName: 'gpt-4-0613',
+  modelName: 'gpt-4',
   openAIApiKey: runtimeConfig.public.openAiApiKey
 })
+
+const chatPromptTemplate = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant that answers questions about the following excerpt from a website titled {title}:\n\n{content}'],
+])
 
 const fetchContent = async () => {
   isLoading.value = true
@@ -25,15 +29,11 @@ const fetchContent = async () => {
   const { data } = await useFetch(`/api/contents?url=${encodeURIComponent(url.value)}`)
   document.value = data.value
   isLoading.value = false
-  messages.value = [
-    new SystemMessage({
-      content: await PromptTemplate.fromTemplate(
-        `You are a helpful assistant that answers questions about the following excerpt from a website titled {title}:\n\n{content}`).format({
-          title: document.value.title,
-          content: document.value.content
-        })
-    })
-  ]
+
+  messages.value = await chatPromptTemplate.formatMessages({
+    title: document.value.title,
+    content: document.value.content
+  })
 }
 
 const generate = async () => {
@@ -41,7 +41,7 @@ const generate = async () => {
 
   messages.value.push(new HumanMessage({ content: prompt.value }))
   prompt.value = ''
-  const response = await model.call(messages.value)
+  const response = await model.invoke(messages.value)
 
   messages.value.push(response)
 

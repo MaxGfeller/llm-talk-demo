@@ -1,12 +1,12 @@
 <script setup>
-import { Chroma } from 'langchain/vectorstores/chroma'
-import { Ollama } from 'langchain/llms/ollama'
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { PromptTemplate } from 'langchain/prompts'
-import { StringOutputParser } from 'langchain/schema/output_parser'
+import { Chroma } from '@langchain/community/vectorstores/chroma'
+import { Ollama } from '@langchain/community/llms/ollama'
+import { OpenAIEmbeddings } from '@langchain/openai'
+import { ChatOpenAI } from '@langchain/openai'
+import { PromptTemplate } from '@langchain/core/prompts'
+import { StringOutputParser } from '@langchain/core/output_parsers'
 import Markdown from 'markdown-it'
-import { RunnableSequence } from 'langchain/schema/runnable'
+import { RunnableSequence } from '@langchain/core/runnables'
 import { formatDocumentsAsString } from 'langchain/util/document'
 
 const messages = ref([])
@@ -30,7 +30,7 @@ const isLoading = ref(false)
 
 const ollama = new Ollama({
   baseUrl: 'http://localhost:11434',
-  model: 'llama2:13b-chat',
+  model: 'nous-hermes2:10.7b',
 })
 
 const model = new ChatOpenAI({

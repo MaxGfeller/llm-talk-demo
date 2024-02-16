@@ -1,6 +1,11 @@
 # LLM Talk Demo
 
-This is the little demo application I'm using for my "[Building Web Apps with LLMs](https://www.meetup.com/web-enthusiasts-basel/events/295242076/)" talk. The application is built using [Nuxt](https://nuxt.com), [Tailwind CSS](https://tailwindcss.com) and [Langchain](https://www.langchain.com).
+Links:
+- [My LinkedIn](https://www.linkedin.com/in/max-gfeller-038b1847/)
+- [My Twitter](https://twitter.com/mgfeller)
+- [Sutro](https://www.sutro.xyz)
+
+This is the little demo application I'm using for my **Building AI-Powered Web Applications** talk. The application is built using [Nuxt](https://nuxt.com), [Tailwind CSS](https://tailwindcss.com) and [Langchain](https://www.langchain.com).
 
 ## Installation
 
@@ -12,25 +17,25 @@ To run the examples, you need to create a `.env` file in the root directory and 
 OPENAI_API_KEY=<your openai api key>
 ```
 
-If you don't have a key yet, sign up for a OpenAI account and generate an API key.
+If you don't have a key yet, sign up for an OpenAI account and generate an API key.
 
 ## Examples
 
 ### Example 1 (`index.vue`)
 
-This is a very simple example, which is showing how you can load and call a model. If the user clicks the button, it will generate a suggestions for a repository name.
+This is a very simple example, which is showing how you can load and call a model. If the user clicks the button, it will generate suggestions for a repository name.
 
 ### Example 2 (`example2.vue`)
 
-This example is just a little more dynamic: using [Prompt Templates](https://js.langchain.com/docs/modules/model_io/prompts/prompt_templates/), we can create a very simple form in which the user can enter sentence which GPT then rewrites to make it sound professional.
+This example is just a little more dynamic: using [Prompt Templates](https://js.langchain.com/docs/modules/model_io/prompts/prompt_templates/), we can create a very simple form in which the user can enter a sentence which GPT then rewrites to make it sound professional.
 
 ### Example 3 (`example3.vue`)
 
-Our users are able to input a link to an article here and we'll create a new chat model with the article's text embedded in it. The user can then ask questions about the article and the model will try to answer them.
+Our users can input a link to an article here and we'll create a new chat model with the article's text embedded in it. The user can then ask questions about the article and the model will try to answer them.
 
 ### Example 4 (`example4.vue`)
 
-In this example we're using a vector database that was filled with data from the [Nuxt documentation](https://nuxt.com/docs).
+In this example, we're using a vector database that was filled with data from the [Nuxt documentation](https://nuxt.com/docs).
 
 To run this example, you have to have a [ChromaDB](https://www.trychroma.com) instance running locally, with CORS headers enabled. To do this, you need to edit the `config.py` file inside the root folder:
 
@@ -45,13 +50,13 @@ git clone git@github.com:nuxt/website-v2.git processing/nuxt-website-repo
 npm run process-data
 ```
 
-This will scrape all the documentation pages from the Nuxt website and store them in the ChromaDB instance. It's using [OpenAIs ada-002 embedding model](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) to create the vectors.
+This will scrape all the documentation pages from the Nuxt website and store them in the ChromaDB instance. It uses [OpenAIs ada-002 embedding model](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) to create the vectors.
 
 ### Example 5 (`example5.vue`)
 
-In this example we're introducing an assistant that can access data and tools inside a demo todo application.
+In this example, we're introducing an assistant that can access data and tools inside a demo todo application.
 
-The agent is also given tools to view and edit the source code of the web application, it itself is running on. You can give it orders to change various things on the open website and, because it's running in dev mode with HMR enabled, see the changes be applied in real-time.
+The agent is also given tools to view and edit the source code of the web application, it itself is running on. You can give it orders to change various things on the open website and, because it's running in dev mode with HMR enabled, see the changes be applied in real time.
 
 You can take a look at the defined tools in the `example5.vue` file, and the API methods they are calling in the `server/api/code/` directory.
 

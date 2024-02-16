@@ -1,6 +1,6 @@
 <script setup>
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { HumanMessage } from 'langchain/schema'
+import { ChatOpenAI } from '@langchain/openai'
+import { HumanMessage } from '@langchain/core/messages'
 
 const runtimeConfig = useRuntimeConfig()
 
@@ -8,13 +8,13 @@ const result = ref('')
 const isLoading = ref(false)
 
 const chat = new ChatOpenAI({
-  modelName: 'gpt-4-0613',
+  modelName: 'gpt-4',
   openAIApiKey: runtimeConfig.public.openAiApiKey
 })
 
 const generate = async () => {
   isLoading.value = true
-  const response = await chat.predictMessages([
+  const response = await chat.invoke([
     new HumanMessage('For a new git repository, suggest a name to use. It should consist of two lowercase words, joined together by a dash. The words don\'t have to make sense together.')
   ])
 
